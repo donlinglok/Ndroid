@@ -1,0 +1,23 @@
+
+squid:S2147 "yCombine this catch with the one at line 159, which has the same body. (sonar.java.source not set. Assuming 7 or greater.)(ı‡Ó¥øÿÿÿÿ8Í™+
+…"squid:ClassVariableVisibilityCheck$"WMake deviceWidth a static final constant or non-public and provide accessors if needed.(¯ŸçÀ
+tsquid:S1604…"\Make this anonymous inner class a lambda (sonar.java.source not set. Assuming 8 or greater.)(É”Ìç
+ssquid:S1604+"\Make this anonymous inner class a lambda (sonar.java.source not set. Assuming 8 or greater.)(ìíŒ„
+ssquid:S1604n"\Make this anonymous inner class a lambda (sonar.java.source not set. Assuming 8 or greater.)(É”Ìç
+‡"squid:ClassVariableVisibilityCheck "TMake activity a static final constant or non-public and provide accessors if needed.(§óéÔÿÿÿÿÿ
+Isquid:S00108Ÿ")Either remove or fill this block of code.(€ÅÈ‘8Í™+
+Dsquid:S1166Ÿ"%Either log or rethrow this exception.(€ÅÈ‘8Í™+
+Osquid:S1213\"8Move this variable to comply with Java Code Conventions.(É•‰£
+jsquid:ModifiersOrderCheck+"EReorder the modifiers to comply with the Java Language Specification.(ìíŒ„
+‰"squid:ClassVariableVisibilityCheck!"VMake appContext a static final constant or non-public and provide accessors if needed.(©„ò«úÿÿÿÿ
+Hsquid:S00108¡")Either remove or fill this block of code.(ëú88Í™+
+†"squid:ClassVariableVisibilityCheck#"XMake deviceHeight a static final constant or non-public and provide accessors if needed.(ìò¨³
+Isquid:S1166 "%Either log or rethrow this exception.(ı‡Ó¥øÿÿÿÿ8Í™+
+Osquid:S1213+"8Move this variable to comply with Java Code Conventions.(ìíŒ„
+ssquid:S1604y"\Make this anonymous inner class a lambda (sonar.java.source not set. Assuming 8 or greater.)(É”Ìç
+Nsquid:S00108 ")Either remove or fill this block of code.(ı‡Ó¥øÿÿÿÿ8Í™+
+:squid:S1148."#Use a logger to log this exception.(òçøì
+Csquid:S1166¡"%Either log or rethrow this exception.(ëú88Í™+
+ssquid:S1604_"\Make this anonymous inner class a lambda (sonar.java.source not set. Assuming 8 or greater.)(É”Ìç
+—squid:S2147¡"yCombine this catch with the one at line 159, which has the same body. (sonar.java.source not set. Assuming 7 or greater.)(ëú88Í™+
+Rsquid:S11472";Remove this call to "exit" or ensure it is really required.(¯á

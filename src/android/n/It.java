@@ -1,15 +1,15 @@
 package android.n;
 
 public class It {
-    public static boolean isNull(final Object object) {
-	return null == object || NString.parse(object).length() == 0;
-    }
-
-    public static boolean isEqual(final Object objA, final Object objB) {
-	if (isNull(objA)) {
-	    return objB.equals(objA);
-	} else {
-	    return objA.equals(objB);
+	public static final boolean isNull(final Object object) {
+		return null == object || NString.parse(object).length() == 0;
 	}
-    }
+
+	public static final boolean isEqual(final Object objA, final Object objB) {
+		if (isNull(objA)) {
+			return objB.equals(objA);
+		} else {
+			return objA.equals(objB);
+		}
+	}
 }
