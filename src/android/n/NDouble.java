@@ -1,11 +1,16 @@
 package android.n;
 
 public class NDouble {
-    public static Double parse(final Object obj) {
-	return parse(obj, null);
-    }
+	public static final Double parse(final Object obj) {
+		return parse(obj, "0");
+	}
 
-    public static Double parse(final Object obj, final String def) {
-	return Double.parseDouble(NString.parse(obj, def));
-    }
+	public static final Double parse(final Object obj, final String def) {
+		Double result = Double.parseDouble(def);
+		try {
+			result = Double.parseDouble(NString.parse(obj, def));
+		} catch (final Exception e) {
+		}
+		return result;
+	}
 }

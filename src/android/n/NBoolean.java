@@ -1,11 +1,16 @@
 package android.n;
 
 public class NBoolean {
-    public static Boolean parse(final Object obj) {
-	return parse(obj, null);
-    }
+	public static final Boolean parse(final Object obj) {
+		return parse(obj, "false");
+	}
 
-    public static Boolean parse(final Object obj, final String def) {
-	return Boolean.parseBoolean(NString.parse(obj, def));
-    }
+	public static final Boolean parse(final Object obj, final String def) {
+		Boolean result = Boolean.parseBoolean(def);
+		try {
+			result = Boolean.parseBoolean(NString.parse(obj, def));
+		} catch (final Exception e) {
+		}
+		return result;
+	}
 }
