@@ -10,8 +10,12 @@ $src/android/n/NFragmentActivity.java,8\c\8ca7af005e94dee88924ad187d8c49e720599
 A
 bin/jarlist.cache,f\5\f5bcc57cf788165e250a868abf32b4add1964955
 >
+<<<<<<< HEAD
 bin/ndroid.jar,4\1\412e9499d169b77b08a08070dc2062ea1ff92dc5
 G
 bin/AndroidManifest.xml,9\1\916d2c84c772496ce1ae11d17659e8f3d416cdca
 B
 project.properties,7\5\75cff21b7360156f57ee4fe83edc2df9798552fb
+=======
+bin/ndroid.jar,4\1\412e9499d169b77b08a08070dc2062ea1ff92dc5
+>>>>>>> branch 'master' of https://github.com/donlinglok/Ndroid.git

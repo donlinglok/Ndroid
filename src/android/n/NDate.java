@@ -54,7 +54,6 @@ public class NDate {
 		} catch (final ParseException e) {
 			e.printStackTrace();
 		}
-
 		return calendar.getTime();
 	}
 
