@@ -104,11 +104,6 @@ public class NString {
 	public static final String OP_SQBRACK = new String(new char[] { 91 });
 	public static final String BACKSLASH = new String(new char[] { 92 });
 
-	public static final String yo(final String str, final Object... objs) {
-
-		return null;
-	}
-
 	public static final String add(final Object... words) {
 		final StringBuilder queryBuffer = new StringBuilder();
 		for (final Object word : words) {

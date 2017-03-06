@@ -1,6 +1,9 @@
 package android.n;
 
 public class It {
+	private It() {
+	}
+
 	public static final boolean isNull(final Object object) {
 		return null == object || NString.parse(object).length() == 0;
 	}

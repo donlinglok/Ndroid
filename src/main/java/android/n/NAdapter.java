@@ -41,8 +41,6 @@ public abstract class NAdapter extends BaseAdapter {
 	}
 
 	public View getContentView(final int resid, final ViewGroup parent) {
-		final View rView = LayoutInflater.from(appContext).inflate(resid, parent, false);
-
-		return rView;
+		return LayoutInflater.from(appContext).inflate(resid, parent, false);
 	}
 }

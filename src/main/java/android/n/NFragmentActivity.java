@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -106,18 +107,15 @@ public class NFragmentActivity extends FragmentActivity {
 	private transient AlertDialog alertDialog;
 
 	public void showDialog(final Builder builder) {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public final void run() {
-				if (It.isNull(alertDialog)) {
-					alertDialog = new Builder(activity).create();
-					alertDialog.setCancelable(false);
-				}
+		activity.runOnUiThread(() -> {
+			if (It.isNull(alertDialog)) {
+				alertDialog = new Builder(activity).create();
+				alertDialog.setCancelable(false);
+			}
 
-				alertDialog = builder.create();
-				if (!alertDialog.isShowing() && !((Activity) activity).isFinishing()) {
-					alertDialog.show();
-				}
+			alertDialog = builder.create();
+			if (!alertDialog.isShowing() && !((Activity) activity).isFinishing()) {
+				alertDialog.show();
 			}
 		});
 	}
@@ -125,52 +123,40 @@ public class NFragmentActivity extends FragmentActivity {
 	private transient ProgressDialog progressDialog;
 
 	public void showProgressDialog(final String message) {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (null == progressDialog) {
-					progressDialog = new ProgressDialog(activity);
-					progressDialog.setCancelable(false);
-				}
-				if (!progressDialog.isShowing() && !activity.isFinishing()) {
-					progressDialog.setMessage(message);
-					progressDialog.show();
-				}
+		activity.runOnUiThread(() -> {
+			if (null == progressDialog) {
+				progressDialog = new ProgressDialog(activity);
+				progressDialog.setCancelable(false);
+			}
+			if (!progressDialog.isShowing() && !activity.isFinishing()) {
+				progressDialog.setMessage(message);
+				progressDialog.show();
 			}
 		});
 	}
 
 	public void closeProgressDialog() {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (null != progressDialog && progressDialog.isShowing() && !activity.isFinishing()) {
-					progressDialog.cancel();
-				}
+		activity.runOnUiThread(() -> {
+			if (null != progressDialog && progressDialog.isShowing() && !activity.isFinishing()) {
+				progressDialog.cancel();
 			}
 		});
 	}
 
 	public void fadeIn(final View view) {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (View.VISIBLE != view.getVisibility()) {
-					view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_in));
-					view.setVisibility(View.VISIBLE);
-				}
+		activity.runOnUiThread(() -> {
+			if (View.VISIBLE != view.getVisibility()) {
+				view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_in));
+				view.setVisibility(View.VISIBLE);
 			}
 		});
 	}
 
 	public void fadeOut(final View view) {
-		activity.runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				if (View.GONE != view.getVisibility()) {
-					view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_out));
-					view.setVisibility(View.GONE);
-				}
+		activity.runOnUiThread(() -> {
+			if (View.GONE != view.getVisibility()) {
+				view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_out));
+				view.setVisibility(View.GONE);
 			}
 		});
 	}
@@ -191,8 +177,11 @@ public class NFragmentActivity extends FragmentActivity {
 			field.setAccessible(true);
 			field.set(configCallback, windowManager);
 		} catch (final NoSuchFieldException localNoSuchFieldException) {
+			Log.e("", "", localNoSuchFieldException);
 		} catch (final IllegalAccessException localIllegalAccessException) {
+			Log.e("", "", localIllegalAccessException);
 		} catch (final IllegalArgumentException localIllegalArgumentException) {
+			Log.e("", "", localIllegalArgumentException);
 		}
 	}
 }

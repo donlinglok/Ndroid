@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import android.util.Log;
+
 /*
  * Copyright (c) 2014 Kenneth Tu <don.ling.lok@gmail.com>
  *
@@ -52,7 +54,7 @@ public class NDate {
 		try {
 			calendar.setTime(formFormat.parse(date));
 		} catch (final ParseException e) {
-			e.printStackTrace();
+			Log.e("", "", e);
 		}
 		return calendar.getTime();
 	}
@@ -67,7 +69,7 @@ public class NDate {
 		try {
 			calendar.setTime(new SimpleDateFormat(form, Locale.US).parse(date));
 		} catch (final ParseException e) {
-			e.printStackTrace();
+			Log.e("", "", e);
 		}
 
 		return format(toFormat, calendar.getTime(), offset);
