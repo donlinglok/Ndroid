@@ -1,46 +1,55 @@
 buildscript {
     repositories {
         jcenter()
+    	mavenCentral()
     }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
-
-     	classpath 'me.tatarka:gradle-retrolambda:3.6.0'
+     	classpath 'me.tatarka:gradle-retrolambda:3.+'
     }
 }
 
 apply plugin: 'com.android.library'
-
+apply plugin: 'maven'
 apply plugin: 'eclipse'
 apply plugin: 'me.tatarka.retrolambda'
 
+def app_name = 'Ndroid'
+
 repositories {
     mavenCentral()
+    maven {
+    	url System.getenv("ANDROID_HOME")+"/extras/android/m2repository/"
+    }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
 
     compile 'com.android.support:support-v4:25.+'
-
-    // to use appcomat: in SDK Manager install/update Extras / Android Support Repository
-    // or from command line
-    //	android list sdk
-    //	android update sdk --no-ui --filter <number>
     compile('com.android.support:appcompat-v7:25.+') {
     	exclude module: 'support-v4'
    	}
-
-    // for multi-module project build (needs `settings.gradle`):
-    // reference needed modules or App under test (for Eclipse Android Test project)
-    //compile project(':Module')
-
-    //androidTestCompile 'junit:junit:4.+'
 }
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 9
+        //targetSdkVersion 19
+        //versionCode 1
+        //versionName "1.0"
+        //applicationId  // (was packageName )
+        //applicationIdSuffix
+    }
+
+    lintOptions {
+        abortOnError false
+    }
 
     compileOptions {
     	sourceCompatibility JavaVersion.VERSION_1_8
@@ -58,49 +67,82 @@ android {
             assets.srcDirs = ['assets']
         }
 
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+}
 
-    defaultConfig {
-    	//gradle can override values in AndroidManifest.xml
-        minSdkVersion 9
-        //targetSdkVersion 19
-        //versionCode 1
-        //versionName "1.0"
-        //applicationId  // (was packageName )
-        //applicationIdSuffix
-    }
+task setProject{
+	eclipse.classpath.file {
+	  withXml {
+	    def node = it.asNode()
+	    node.appendNode('classpathentry kind="src" path="src"')
+	    //node.appendNode('classpathentry kind="src" path="src/main/java"')
+	   	//node.appendNode('classpathentry kind="src" path="src/test/java"')
+	    node.appendNode('classpathentry kind="src" path="gen"')
+	    node.appendNode('classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"')
+	    node.appendNode('classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"')
+	    node.appendNode('classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"')
+	  }
+	}
 
-    lintOptions {
-        abortOnError false
-    }
+	eclipse.project {
+	  name = app_name
+
+	  //natures 'org.eclipse.jdt.core.javanature'
+	  natures 'com.android.ide.eclipse.adt.AndroidNature'
+
+	  buildCommand 'org.eclipse.jdt.core.javabuilder'
+	  buildCommand 'com.android.ide.eclipse.adt.ResourceManagerBuilder'
+	  buildCommand 'com.android.ide.eclipse.adt.PreCompilerBuilder'
+	  buildCommand 'com.android.ide.eclipse.adt.ApkBuilder'
+	}
 }
 
 //dependencies to jar
 task dps2jar {
     doLast {
-		// Create a file tree with a base directory
 		FileTree tree = fileTree(dir: 'build/intermediates/exploded-aar')
-
-		// Add include and exclude patterns to the tree
 		tree.include '**/*.jar'
-
-		// Iterate over the contents of a tree
 		tree.each {File jfile  ->
-			String jar = "libs/"+jfile.getParentFile().getParentFile().toString().replace(jfile.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().toString(),"").replace("\\","_")+".jar"
+			println jfile
+			String jar = jfile.getName();
+			if(jar.equals("classes.jar")){
+				jar = jfile.getParentFile().getParentFile().toString().replace(jfile.getParentFile().getParentFile().getParentFile().getParentFile().getParentFile().toString(),"").replace("\\","_")+".jar"
+			}
 			println jar
-		    file(jfile).renameTo(file(jar))
+		    file(jfile).renameTo(file( "libs/"+jar))
 		}
     }
 }
 
+task binJar {
+    FileTree tree = fileTree(dir: 'build/intermediates/classes/')
+	tree.include '**/*.jar'
+	tree.each {File jfile  ->
+		println jfile
+	    file(jfile).renameTo(file( "bin/"+app_name+'.jar'))
+	}
+}
+
+task run {
+	dependsOn 'androidDependencies'
+	dependsOn 'clean'
+	dependsOn 'cleanEclipse'
+	dependsOn 'build'
+	dependsOn 'dps2jar'
+	dependsOn 'eclipse'
+	dependsOn 'setProject'
+	//dependsOn 'assembleAndroidTest'
+	dependsOn 'binJar'
+	tasks.findByName('clean').mustRunAfter 'androidDependencies'
+	tasks.findByName('cleanEclipse').mustRunAfter 'clean'
+	tasks.findByName('build').mustRunAfter 'cleanEclipse'
+	tasks.findByName('dps2jar').mustRunAfter 'build'
+	tasks.findByName('eclipse').mustRunAfter 'dps2jar'
+	tasks.findByName('setProject').mustRunAfter 'eclipse'
+	tasks.findByName('assembleAndroidTest').mustRunAfter 'setProject'
+	tasks.findByName('binJar').mustRunAfter 'assembleAndroidTest'
+}
+
+defaultTasks 'run'

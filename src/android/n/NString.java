@@ -106,9 +106,8 @@ public class NString {
 
 	public static final String add(final Object... words) {
 		final StringBuilder queryBuffer = new StringBuilder();
-		for (final Object word : words) {
+		for (final Object word : words)
 			queryBuffer.append(word);
-		}
 		return parse(queryBuffer, "");
 	}
 
@@ -139,5 +138,4 @@ public class NString {
 	public static final String parse(final double doubles) {
 		return Double.toString(doubles);
 	}
-
 }

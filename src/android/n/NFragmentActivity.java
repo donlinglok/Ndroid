@@ -1,9 +1,9 @@
 package android.n;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -42,6 +42,17 @@ public class NFragmentActivity extends FragmentActivity {
 
 	public transient int layoutId;
 
+	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new UncaughtExceptionHandler() {
+		@Override
+		public void uncaughtException(final Thread thread, final Throwable exception) {
+			Log.e("", "", exception);
+			final Intent intent = appContext.getPackageManager().getLaunchIntentForPackage(appContext.getPackageName());
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+			startActivity(intent);
+			System.exit(0);
+		}
+	};
+
 	public NFragmentActivity() {
 		this.layoutId = 0;
 	}
@@ -49,18 +60,6 @@ public class NFragmentActivity extends FragmentActivity {
 	public NFragmentActivity(final int layoutId) {
 		this.layoutId = layoutId;
 	}
-
-	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new Thread.UncaughtExceptionHandler() {
-		@TargetApi(Build.VERSION_CODES.CUPCAKE)
-		@Override
-		public void uncaughtException(final Thread thread, final Throwable exception) {
-			exception.printStackTrace();
-			final Intent intent = appContext.getPackageManager().getLaunchIntentForPackage(appContext.getPackageName());
-			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-			startActivity(intent);
-			System.exit(0);
-		}
-	};
 
 	public void onCreate(final Bundle savedInstanceState, final boolean isUndead) {
 		super.onCreate(savedInstanceState);
@@ -107,15 +106,18 @@ public class NFragmentActivity extends FragmentActivity {
 	private transient AlertDialog alertDialog;
 
 	public void showDialog(final Builder builder) {
-		activity.runOnUiThread(() -> {
-			if (It.isNull(alertDialog)) {
-				alertDialog = new Builder(activity).create();
-				alertDialog.setCancelable(false);
-			}
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (It.isNull(alertDialog)) {
+					alertDialog = new Builder(activity).create();
+					alertDialog.setCancelable(false);
+				}
 
-			alertDialog = builder.create();
-			if (!alertDialog.isShowing() && !((Activity) activity).isFinishing()) {
-				alertDialog.show();
+				alertDialog = builder.create();
+				if (!alertDialog.isShowing() && !((Activity) activity).isFinishing()) {
+					alertDialog.show();
+				}
 			}
 		});
 	}
@@ -123,40 +125,52 @@ public class NFragmentActivity extends FragmentActivity {
 	private transient ProgressDialog progressDialog;
 
 	public void showProgressDialog(final String message) {
-		activity.runOnUiThread(() -> {
-			if (null == progressDialog) {
-				progressDialog = new ProgressDialog(activity);
-				progressDialog.setCancelable(false);
-			}
-			if (!progressDialog.isShowing() && !activity.isFinishing()) {
-				progressDialog.setMessage(message);
-				progressDialog.show();
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (null == progressDialog) {
+					progressDialog = new ProgressDialog(activity);
+					progressDialog.setCancelable(false);
+				}
+				if (!progressDialog.isShowing() && !activity.isFinishing()) {
+					progressDialog.setMessage(message);
+					progressDialog.show();
+				}
 			}
 		});
 	}
 
 	public void closeProgressDialog() {
-		activity.runOnUiThread(() -> {
-			if (null != progressDialog && progressDialog.isShowing() && !activity.isFinishing()) {
-				progressDialog.cancel();
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (null != progressDialog && progressDialog.isShowing() && !activity.isFinishing()) {
+					progressDialog.cancel();
+				}
 			}
 		});
 	}
 
 	public void fadeIn(final View view) {
-		activity.runOnUiThread(() -> {
-			if (View.VISIBLE != view.getVisibility()) {
-				view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_in));
-				view.setVisibility(View.VISIBLE);
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (View.VISIBLE != view.getVisibility()) {
+					view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_in));
+					view.setVisibility(View.VISIBLE);
+				}
 			}
 		});
 	}
 
 	public void fadeOut(final View view) {
-		activity.runOnUiThread(() -> {
-			if (View.GONE != view.getVisibility()) {
-				view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_out));
-				view.setVisibility(View.GONE);
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (View.GONE != view.getVisibility()) {
+					view.startAnimation(AnimationUtils.loadAnimation(appContext, android.R.anim.fade_out));
+					view.setVisibility(View.GONE);
+				}
 			}
 		});
 	}

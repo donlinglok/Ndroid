@@ -38,36 +38,35 @@ public class NDate {
 	public static final Calendar getCalendar() {
 		final Calendar calendar = Calendar.getInstance();
 
-		if (!It.isNull(myTime)) {
+		if (!It.isNull(myTime))
 			calendar.setTime(myTime);
-		}
 
 		return calendar;
 	}
 
-	public static final Date parse(final String form, final String date) {
+	public static final Date parse(final String form, final Object date) {
 		return parse(new SimpleDateFormat(form, Locale.US), date);
 	}
 
-	public static final Date parse(final DateFormat formFormat, final String date) {
+	public static final Date parse(final DateFormat formFormat, final Object date) {
 		final Calendar calendar = getCalendar();
 		try {
-			calendar.setTime(formFormat.parse(date));
+			calendar.setTime(formFormat.parse(NString.parse(date)));
 		} catch (final ParseException e) {
 			Log.e("", "", e);
 		}
 		return calendar.getTime();
 	}
 
-	public static final String toString(final String form, final String to, final String date, final String offset) {
+	public static final String toString(final String form, final String to, final Object date, final String offset) {
 		return toString(form, new SimpleDateFormat(to, Locale.US), date, offset);
 	}
 
-	public static final String toString(final String form, final DateFormat toFormat, final String date,
+	public static final String toString(final String form, final DateFormat toFormat, final Object date,
 			final String offset) {
 		final Calendar calendar = getCalendar();
 		try {
-			calendar.setTime(new SimpleDateFormat(form, Locale.US).parse(date));
+			calendar.setTime(new SimpleDateFormat(form, Locale.US).parse(NString.parse(date)));
 		} catch (final ParseException e) {
 			Log.e("", "", e);
 		}

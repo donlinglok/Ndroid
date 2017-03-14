@@ -154,7 +154,7 @@ public class NStorage {
 	 * @param key
 	 * @return
 	 */
-	public static final List<?> getArray(final Context baseContext, final String key) {
+	public static final List<Object> getArray(final Context baseContext, final String key) {
 		return getArray(baseContext, NAME, key);
 	}
 
@@ -311,10 +311,10 @@ public class NStorage {
 	 * @param key
 	 * @return
 	 */
-	public static final List<?> getArray(final Context baseContext, final String name, final String key) {
+	public static final List<Object> getArray(final Context baseContext, final String name, final String key) {
 		final SharedPreferences prefs = baseContext.getSharedPreferences(name, 0);
 		final int size = prefs.getInt(NString.parse(key, "_size"), 0);
-		final ArrayList<String> array = new ArrayList<String>(size);
+		final ArrayList<Object> array = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {
 			array.add(i, prefs.getString(NString.parse(key, "_") + i, null));
 		}

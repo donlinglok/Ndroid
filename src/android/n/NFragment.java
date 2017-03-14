@@ -1,8 +1,8 @@
 package android.n;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 /*
  * Copyright (c) 2014 Kenneth Tu <don.ling.lok@gmail.com>
@@ -27,6 +27,7 @@ public class NFragment extends Fragment {
 		this.layoutId = layoutId;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onAttach(final Activity activity) {
 		super.onAttach(activity);
