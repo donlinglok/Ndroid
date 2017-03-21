@@ -44,7 +44,7 @@ public class NFragmentActivity extends FragmentActivity {
 
 	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new UncaughtExceptionHandler() {
 		@Override
-		public void uncaughtException(final Thread thread, final Throwable exception) {
+		public void uncaughtException(Thread thread, Throwable exception) {
 			Log.e("", "", exception);
 			final Intent intent = appContext.getPackageManager().getLaunchIntentForPackage(appContext.getPackageName());
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
