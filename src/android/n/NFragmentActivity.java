@@ -44,7 +44,7 @@ public class NFragmentActivity extends FragmentActivity {
 
 	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new UncaughtExceptionHandler() {
 		@Override
-		public void uncaughtException(Thread thread, Throwable exception) {
+		public void uncaughtException(final Thread thread, final Throwable exception) {
 			Log.e("", "", exception);
 			final Intent intent = appContext.getPackageManager().getLaunchIntentForPackage(appContext.getPackageName());
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -54,7 +54,7 @@ public class NFragmentActivity extends FragmentActivity {
 	};
 
 	public NFragmentActivity() {
-		this.layoutId = 0;
+		layoutId = 0;
 	}
 
 	public NFragmentActivity(final int layoutId) {
@@ -122,7 +122,7 @@ public class NFragmentActivity extends FragmentActivity {
 		});
 	}
 
-	private transient ProgressDialog progressDialog;
+	public transient ProgressDialog progressDialog;
 
 	public void showProgressDialog(final String message) {
 		activity.runOnUiThread(new Runnable() {
