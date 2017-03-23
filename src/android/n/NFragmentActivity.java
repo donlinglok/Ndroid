@@ -40,7 +40,8 @@ public class NFragmentActivity extends FragmentActivity {
 		onCreate(savedInstanceState, true);
 	}
 
-	private final transient  Thread.UncaughtExceptionHandler onRuntimeError = new Thread.UncaughtExceptionHandler() {
+	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new Thread.UncaughtExceptionHandler() {
+		@SuppressLint("NewApi")
 		@Override
 		public void uncaughtException(final Thread thread, final Throwable exception) {
 			exception.printStackTrace();
