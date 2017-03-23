@@ -1,14 +1,19 @@
 package android.n;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.lang.reflect.Field;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,22 +40,27 @@ public class NFragmentActivity extends FragmentActivity {
 	public transient int deviceHeight;
 	public transient int deviceWidth;
 
-	@Override
-	public void onCreate(final Bundle savedInstanceState) {
-		onCreate(savedInstanceState, true);
-	}
+	public transient int layoutId;
 
 	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new Thread.UncaughtExceptionHandler() {
 		@SuppressLint("NewApi")
 		@Override
 		public void uncaughtException(final Thread thread, final Throwable exception) {
-			exception.printStackTrace();
+			Log.e("", "", exception);
 			final Intent intent = appContext.getPackageManager().getLaunchIntentForPackage(appContext.getPackageName());
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 			startActivity(intent);
 			System.exit(0);
 		}
 	};
+
+	public NFragmentActivity() {
+		layoutId = 0;
+	}
+
+	public NFragmentActivity(final int layoutId) {
+		this.layoutId = layoutId;
+	}
 
 	public void onCreate(final Bundle savedInstanceState, final boolean isUndead) {
 		super.onCreate(savedInstanceState);
@@ -68,6 +78,10 @@ public class NFragmentActivity extends FragmentActivity {
 		setConfigCallback((WindowManager) getApplicationContext().getSystemService("window"));
 
 		setStatusBarColor(0);
+
+		if (!It.isNull(layoutId)) {
+			setContentView(layoutId);
+		}
 	}
 
 	@SuppressLint("NewApi")
@@ -90,17 +104,37 @@ public class NFragmentActivity extends FragmentActivity {
 		// No call for super(). Bug on API Level > 11.
 	}
 
-	private transient ProgressDialog progressDialog;
+	private transient AlertDialog alertDialog;
 
-	public void showProgressDialog() {
+	public void showDialog(final Builder builder) {
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (It.isNull(alertDialog)) {
+					alertDialog = new Builder(activity).create();
+					alertDialog.setCancelable(false);
+				}
+
+				alertDialog = builder.create();
+				if (!alertDialog.isShowing() && !((Activity) activity).isFinishing()) {
+					alertDialog.show();
+				}
+			}
+		});
+	}
+
+	public transient ProgressDialog progressDialog;
+
+	public void showProgressDialog(final String message) {
 		activity.runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				if (null == progressDialog) {
-					progressDialog = new ProgressDialog(appContext);
+					progressDialog = new ProgressDialog(activity);
 					progressDialog.setCancelable(false);
 				}
 				if (!progressDialog.isShowing() && !activity.isFinishing()) {
+					progressDialog.setMessage(message);
 					progressDialog.show();
 				}
 			}
@@ -158,8 +192,11 @@ public class NFragmentActivity extends FragmentActivity {
 			field.setAccessible(true);
 			field.set(configCallback, windowManager);
 		} catch (final NoSuchFieldException localNoSuchFieldException) {
+			Log.e("", "", localNoSuchFieldException);
 		} catch (final IllegalAccessException localIllegalAccessException) {
+			Log.e("", "", localIllegalAccessException);
 		} catch (final IllegalArgumentException localIllegalArgumentException) {
+			Log.e("", "", localIllegalArgumentException);
 		}
 	}
 }

@@ -2,6 +2,9 @@ package android.n;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 /*
@@ -13,8 +16,8 @@ import android.widget.BaseAdapter;
  * @version 1.0.0
  */
 public abstract class NAdapter extends BaseAdapter {
-	public final transient  Activity activity;
-	public final transient  Context appContext;
+	public final transient Activity activity;
+	public final transient Context appContext;
 
 	public NAdapter(final Activity activity) {
 		super();
@@ -37,4 +40,7 @@ public abstract class NAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public View getContentView(final int resid, final ViewGroup parent) {
+		return LayoutInflater.from(appContext).inflate(resid, parent, false);
+	}
 }

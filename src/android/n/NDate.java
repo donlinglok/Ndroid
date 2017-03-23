@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import android.util.Log;
+
 /*
  * Copyright (c) 2014 Kenneth Tu <don.ling.lok@gmail.com>
  *
@@ -30,51 +32,87 @@ public class NDate {
 	}
 
 	public static final Date getDate() {
-		return getInstance().getTime();
+		return getCalendar().getTime();
 	}
 
-	public static final Calendar getInstance() {
+	public static final Calendar getCalendar() {
 		final Calendar calendar = Calendar.getInstance();
 
-		if (!It.isNull(myTime)) {
+		if (!It.isNull(myTime))
 			calendar.setTime(myTime);
-		}
 
 		return calendar;
 	}
 
-	public static final Date parse(final DateFormat formFormat, final String date) {
-		final Calendar calendar = getInstance();
-		try {
-			calendar.setTime(formFormat.parse(date));
-		} catch (final ParseException e) {
-			e.printStackTrace();
-		}
+	public static final Date parse(final String form, final Object date) {
+		return parse(new SimpleDateFormat(form, Locale.US), date);
+	}
 
+	public static final Date parse(final DateFormat formFormat, final Object date) {
+		final Calendar calendar = getCalendar();
+		try {
+			calendar.setTime(formFormat.parse(NString.parse(date)));
+		} catch (final ParseException e) {
+			Log.e("", "", e);
+		}
 		return calendar.getTime();
 	}
 
-	public static final String toString(final String formFormat, final DateFormat toFormat, final String date,
+	public static final String toString(final String form, final String to, final Object date, final String offset) {
+		return toString(form, new SimpleDateFormat(to, Locale.US), date, offset);
+	}
+
+	public static final String toString(final String form, final DateFormat toFormat, final Object date,
 			final String offset) {
-		final Calendar calendar = getInstance();
+		final Calendar calendar = getCalendar();
 		try {
-			calendar.setTime(new SimpleDateFormat(formFormat, Locale.US).parse(date));
+			calendar.setTime(new SimpleDateFormat(form, Locale.US).parse(NString.parse(date)));
 		} catch (final ParseException e) {
-			e.printStackTrace();
+			Log.e("", "", e);
 		}
 
-		return toString(toFormat, calendar.getTime(), offset);
+		return format(toFormat, calendar.getTime(), offset);
 	}
 
-	public static final String toString(final String toFormat, final Date date, final String offset) {
-		return toString(new SimpleDateFormat(toFormat, Locale.US), date, offset);
+	public static final String format(final String to, final Date date, final String offset) {
+		return format(new SimpleDateFormat(to, Locale.US), date, offset);
 	}
 
-	public static final String toString(final DateFormat toFormat, final Date date, final String offset) {
-		final Calendar calendar = getInstance();
+	public static final String format(final DateFormat toFormat, final Date date, final String offset) {
+		final Calendar calendar = getCalendar();
 		calendar.setTime(date);
 		toFormat.setTimeZone(TimeZone.getTimeZone("GMT" + offset));
 
 		return toFormat.format(calendar.getTime());
+	}
+
+	public static final boolean isToday(final Date date) {
+		return isToday(date, 0);
+	}
+
+	public static final boolean isToday(final Date date, final int allowance) {
+		final Calendar calendar = getCalendar();
+		calendar.add(Calendar.HOUR, allowance);
+
+		return isSameDay(date, calendar.getTime());
+	}
+
+	public static final boolean isSameDay(final Date date1, final Date date2) {
+		boolean result = false;
+		if (null != date1 && null != date2) {
+			final Calendar calendar1 = getCalendar();
+			calendar1.setTime(date1);
+			final Calendar calendar2 = getCalendar();
+			calendar2.setTime(date2);
+			result = calendar1.get(Calendar.ERA) == calendar2.get(Calendar.ERA)
+					&& calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR)
+					&& calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR);
+		}
+		return result;
+	}
+
+	public static final int nowHour() {
+		final Calendar calendar = getCalendar();
+		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
 }

@@ -21,6 +21,13 @@ public class NFragment extends Fragment {
 	public transient NFragmentActivity activity;
 	public transient Context appContext;
 
+	public transient int layoutId;
+
+	public NFragment(final int layoutId) {
+		this.layoutId = layoutId;
+	}
+
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onAttach(final Activity activity) {
 		super.onAttach(activity);
