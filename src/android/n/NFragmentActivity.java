@@ -42,7 +42,8 @@ public class NFragmentActivity extends FragmentActivity {
 
 	public transient int layoutId;
 
-	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new UncaughtExceptionHandler() {
+	private final transient Thread.UncaughtExceptionHandler onRuntimeError = new Thread.UncaughtExceptionHandler() {
+		@SuppressLint("NewApi")
 		@Override
 		public void uncaughtException(final Thread thread, final Throwable exception) {
 			Log.e("", "", exception);
